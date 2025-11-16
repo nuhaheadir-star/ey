@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PowerPort Digital Twin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #2a3a7c);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            margin-right: 15px;
+            color: #4cd964;
+        }
+
+        .logo h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #4cd964, #5ac8fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: background 0.3s;
+            font-weight: 500;
+        }
+
+        .nav a:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav a.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .date-time {
+            text-align: right;
+        }
+
+        .date-time p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .card-icon {
+            font-size: 1.8rem;
+            color: #5ac8fa;
+        }
+
+        .data-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 15px 0;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .data-unit {
+            font-size: 1.2rem;
+            margin-left: 5px;
+            opacity: 0.8;
+        }
+
+        .data-status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .progress-container {
+            margin-top: 15px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 1s ease-in-out;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .status-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .status-title {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .status-title i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .status-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .status-details {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .good {
+            color: #4cd964;
+        }
+
+        .stable {
+            color: #5ac8fa;
+        }
+
+        .charging {
+            color: #ffcc00;
+        }
+
+        .healthy {
+            color: #4cd964;
+        }
+
+        .warning {
+            color: #ff9500;
+        }
+
+        .bg-good {
+            background-color: #4cd964;
+        }
+
+        .bg-stable {
+            background-color: #5ac8fa;
+        }
+
+        .bg-charging {
+            background-color: #ffcc00;
+        }
+
+        .bg-warning {
+            background-color: #ff9500;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .data-update-indicator {
+            font-size: 0.7rem;
+            opacity: 0.6;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .nav {
+                margin: 15px 0;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .date-time {
+                margin-top: 15px;
+                text-align: center;
+            }
+            
+            .data-value {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-bolt"></i>
+                <h1>PowerPort Digital Twin Dashboard</h1>
+            </div>
+            <div class="nav">
+                <a href="#" class="active">Dashboard</a>
+                <a href="telemetry.html">Telemetry</a>
+                <a href="eventlog.html">Event Log</a>
+                <a href="buoy.html">Digital Twin</a>
+            </div>
+            <div class="date-time">
+                <p id="currentDateTime">Loading...</p>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Wave Intensity</h2>
+                    <i class="fas fa-water card-icon"></i>
+                </div>
+                <div class="data-value" id="waveIntensity">1.4<span class="data-unit">m</span></div>
+                <div class="data-status stable" id="waveStatus">Stable</div>
+                <div class="data-update-indicator">Updated: <span id="waveUpdateTime">Just now</span></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Power Output</h2>
+                    <i class="fas fa-bolt card-icon"></i>
+                </div>
+                <div class="data-value" id="powerOutputPercent">68<span class="data-unit">%</span></div>
+                <div class="data-value" id="powerOutputKW">340<span class="data-unit">kW</span></div>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill bg-stable" id="powerOutputBar" style="width: 68%"></div>
+                    </div>
+                </div>
+                <div class="data-update-indicator">Updated: <span id="powerUpdateTime">Just now</span></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Battery Level</h2>
+                    <i class="fas fa-battery-three-quarters card-icon"></i>
+                </div>
+                <div class="data-value" id="batteryLevel">82<span class="data-unit">%</span></div>
+                <div class="data-status good" id="batteryStatus">Ready for use</div>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill bg-good" id="batteryBar" style="width: 82%"></div>
+                    </div>
+                </div>
+                <div class="data-update-indicator">Updated: <span id="batteryUpdateTime">Just now</span></div>
+            </div>
+        </div>
+
+        <div class="status-grid">
+            <div class="status-card">
+                <h3 class="status-title"><i class="fas fa-cogs"></i> Operation Mode</h3>
+                <div class="status-value charging" id="operationMode">Charging Mode</div>
+                <p class="status-details" id="operationDetails">System is currently charging the battery</p>
+                <div class="data-update-indicator">Updated: <span id="operationUpdateTime">Just now</span></div>
+            </div>
+
+            <div class="status-card">
+                <h3 class="status-title"><i class="fas fa-buoy"></i> Buoy Status</h3>
+                <div class="status-value stable" id="buoyStatus">Stable Mode</div>
+                <p class="status-details" id="buoyDetails">Buoy sensor & turbine are working normally</p>
+                <div class="data-update-indicator">Updated: <span id="buoyUpdateTime">Just now</span></div>
+            </div>
+
+            <div class="status-card">
+                <h3 class="status-title"><i class="fas fa-plug"></i> Rig Status</h3>
+                <div class="status-value healthy" id="rigStatus">Connected & Healthy</div>
+                <p class="status-details" id="rigDetails">Within safe power limit</p>
+                <div class="data-update-indicator">Updated: <span id="rigUpdateTime">Just now</span></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>PowerPort Digital Twin Dashboard • Real-time Monitoring System</p>
+        </div>
+    </div>
+
+    <script>
+        // Update date and time
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            document.getElementById('currentDateTime').textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        // Initial call and set interval to update every second
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+
+        // Add some dynamic elements for a more interactive feel
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card, .status-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.3)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.2)';
+                });
+            });
+        });
+
+        // Function to update time indicator
+        function updateTimeIndicator(elementId) {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+            document.getElementById(elementId).textContent = timeString;
+        }
+
+        // Function to simulate dynamic data changes
+        function updateDashboardData() {
+            // Wave Intensity - varies between 0.8m and 2.2m
+            const waveIntensity = (0.8 + Math.random() * 1.4).toFixed(1);
+            document.getElementById('waveIntensity').innerHTML = `${waveIntensity}<span class="data-unit">m</span>`;
+            
+            // Update wave status based on intensity
+            let waveStatus = document.getElementById('waveStatus');
+            if (waveIntensity < 1.0) {
+                waveStatus.textContent = "Low";
+                waveStatus.className = "data-status warning";
+            } else if (waveIntensity > 2.0) {
+                waveStatus.textContent = "High";
+                waveStatus.className = "data-status warning";
+            } else {
+                waveStatus.textContent = "Stable";
+                waveStatus.className = "data-status stable";
+            }
+            updateTimeIndicator('waveUpdateTime');
+
+            // Power Output - varies between 50% and 85%
+            const powerPercent = Math.floor(50 + Math.random() * 35);
+            const powerKW = Math.floor(powerPercent * 5);
+            document.getElementById('powerOutputPercent').innerHTML = `${powerPercent}<span class="data-unit">%</span>`;
+            document.getElementById('powerOutputKW').innerHTML = `${powerKW}<span class="data-unit">kW</span>`;
+            document.getElementById('powerOutputBar').style.width = `${powerPercent}%`;
+            updateTimeIndicator('powerUpdateTime');
+
+            // Battery Level - varies between 70% and 95%
+            const batteryLevel = Math.floor(70 + Math.random() * 25);
+            document.getElementById('batteryLevel').innerHTML = `${batteryLevel}<span class="data-unit">%</span>`;
+            document.getElementById('batteryBar').style.width = `${batteryLevel}%`;
+            
+            // Update battery status
+            let batteryStatus = document.getElementById('batteryStatus');
+            if (batteryLevel < 75) {
+                batteryStatus.textContent = "Needs Charging";
+                batteryStatus.className = "data-status warning";
+            } else {
+                batteryStatus.textContent = "Ready for use";
+                batteryStatus.className = "data-status good";
+            }
+            updateTimeIndicator('batteryUpdateTime');
+
+            // Operation Mode - randomly changes between states
+            const operationModes = [
+                { mode: "Charging Mode", details: "System is currently charging the battery", class: "charging" },
+                { mode: "Generation Mode", details: "System is generating power from waves", class: "good" },
+                { mode: "Standby Mode", details: "System is on standby", class: "stable" },
+                { mode: "Maintenance Mode", details: "System undergoing maintenance", class: "warning" }
+            ];
+            const randomMode = operationModes[Math.floor(Math.random() * operationModes.length)];
+            document.getElementById('operationMode').textContent = randomMode.mode;
+            document.getElementById('operationMode').className = `status-value ${randomMode.class}`;
+            document.getElementById('operationDetails').textContent = randomMode.details;
+            updateTimeIndicator('operationUpdateTime');
+
+            // Buoy Status - randomly changes between states
+            const buoyStatuses = [
+                { status: "Stable Mode", details: "Buoy sensor & turbine are working normally", class: "stable" },
+                { status: "Active Mode", details: "Buoy is actively generating power", class: "good" },
+                { status: "Maintenance Mode", details: "Buoy undergoing maintenance", class: "warning" },
+                { status: "Recalibrating", details: "Buoy sensors are being recalibrated", class: "charging" }
+            ];
+            const randomBuoyStatus = buoyStatuses[Math.floor(Math.random() * buoyStatuses.length)];
+            document.getElementById('buoyStatus').textContent = randomBuoyStatus.status;
+            document.getElementById('buoyStatus').className = `status-value ${randomBuoyStatus.class}`;
+            document.getElementById('buoyDetails').textContent = randomBuoyStatus.details;
+            updateTimeIndicator('buoyUpdateTime');
+
+            // Rig Status - randomly changes between states
+            const rigStatuses = [
+                { status: "Connected & Healthy", details: "Within safe power limit", class: "healthy" },
+                { status: "Connected & Stable", details: "Operating within normal parameters", class: "stable" },
+                { status: "High Load", details: "Operating near capacity limit", class: "warning" },
+                { status: "Maintenance", details: "Rig undergoing scheduled maintenance", class: "charging" }
+            ];
+            const randomRigStatus = rigStatuses[Math.floor(Math.random() * rigStatuses.length)];
+            document.getElementById('rigStatus').textContent = randomRigStatus.status;
+            document.getElementById('rigStatus').className = `status-value ${randomRigStatus.class}`;
+            document.getElementById('rigDetails').textContent = randomRigStatus.details;
+            updateTimeIndicator('rigUpdateTime');
+        }
+
+        // Update data every 5 seconds
+        setInterval(updateDashboardData, 5000);
+
+        // Initial data update
+        updateDashboardData();
+    </script>
+</body>
+</html>

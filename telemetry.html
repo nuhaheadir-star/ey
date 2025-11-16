@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wave & Power Over Time - PowerPort Telemetry</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #2a3a7c);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            margin-right: 15px;
+            color: #4cd964;
+        }
+
+        .logo h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #4cd964, #5ac8fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .nav a:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav a.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .date-time {
+            text-align: right;
+        }
+
+        .date-time p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #4cd964, #5ac8fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .card-icon {
+            font-size: 1.8rem;
+            color: #5ac8fa;
+        }
+
+        .data-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 15px 0;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .data-unit {
+            font-size: 1.2rem;
+            margin-left: 5px;
+            opacity: 0.8;
+        }
+
+        .data-status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .progress-container {
+            margin-top: 15px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 1s ease-in-out;
+        }
+
+        .telemetry-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .telemetry-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .telemetry-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .telemetry-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #5ac8fa;
+        }
+
+        .telemetry-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .telemetry-label {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .chart-container {
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        .good {
+            color: #4cd964;
+        }
+
+        .stable {
+            color: #5ac8fa;
+        }
+
+        .warning {
+            color: #ffcc00;
+        }
+
+        .critical {
+            color: #ff3b30;
+        }
+
+        .bg-good {
+            background-color: #4cd964;
+        }
+
+        .bg-stable {
+            background-color: #5ac8fa;
+        }
+
+        .bg-warning {
+            background-color: #ffcc00;
+        }
+
+        .bg-critical {
+            background-color: #ff3b30;
+        }
+
+        .data-update-indicator {
+            font-size: 0.7rem;
+            opacity: 0.6;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .nav {
+                margin: 15px 0;
+            }
+            
+            .date-time {
+                margin-top: 15px;
+                text-align: center;
+            }
+            
+            .data-value {
+                font-size: 2rem;
+            }
+            
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .telemetry-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-bolt"></i>
+                <h1>PowerPort Digital Twin</h1>
+            </div>
+            <div class="nav">
+                <a href="index.html">Dashboard</a>
+                <a href="#" class="active">Telemetry</a>
+                <a href="eventlog.html">Event Log</a>
+                <a href="buoy.html">Digital Twin</a>
+            </div>
+            <div class="date-time">
+                <p id="currentDateTime">Loading...</p>
+            </div>
+        </div>
+
+        <h1 class="page-title">Wave & Power Over Time</h1>
+
+        <div class="telemetry-grid">
+            <div class="telemetry-card">
+                <i class="fas fa-bolt telemetry-icon"></i>
+                <div class="telemetry-value" id="energyOutputPercent">68<span class="data-unit">%</span></div>
+                <div class="telemetry-value" id="energyOutputKW">340<span class="data-unit">kW</span></div>
+                <div class="telemetry-label">Energy Output</div>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill bg-stable" id="energyOutputBar" style="width: 68%"></div>
+                    </div>
+                </div>
+                <div class="data-update-indicator">Updated: <span id="energyUpdateTime">Just now</span></div>
+            </div>
+
+            <div class="telemetry-card">
+                <i class="fas fa-fan telemetry-icon"></i>
+                <div class="telemetry-value" id="bladeRPM">54<span class="data-unit">RPM</span></div>
+                <div class="telemetry-label">Blade RPM</div>
+                <div class="data-status stable" id="rpmStatus">Optimal</div>
+                <div class="data-update-indicator">Updated: <span id="rpmUpdateTime">Just now</span></div>
+            </div>
+
+            <div class="telemetry-card">
+                <i class="fas fa-thermometer-half telemetry-icon"></i>
+                <div class="telemetry-value" id="temperature">47<span class="data-unit">°C</span></div>
+                <div class="telemetry-label">Temperature</div>
+                <div class="data-status warning" id="tempStatus">Within Limits</div>
+                <div class="data-update-indicator">Updated: <span id="tempUpdateTime">Just now</span></div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Wave Height & Power Output (Last 24 Hours)</h2>
+                    <i class="fas fa-wave-square card-icon"></i>
+                </div>
+                <div class="chart-container">
+                    <canvas id="wavePowerChart"></canvas>
+                </div>
+                <div class="data-update-indicator">Chart updates every 10 seconds</div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">System Status</h2>
+                    <i class="fas fa-info-circle card-icon"></i>
+                </div>
+                <div class="data-value good" id="systemStatus">Operational</div>
+                <p id="systemDetails">All systems are functioning within normal parameters.</p>
+                
+                <div style="margin-top: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>Power Output</span>
+                        <span class="good" id="powerOutputStatus">68% (Optimal)</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill bg-good" id="powerOutputProgress" style="width: 68%"></div>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; margin: 15px 0 10px;">
+                        <span>Turbine Efficiency</span>
+                        <span class="good" id="turbineEfficiencyStatus">92%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill bg-good" id="turbineEfficiencyProgress" style="width: 92%"></div>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; margin: 15px 0 10px;">
+                        <span>System Load</span>
+                        <span class="stable" id="systemLoadStatus">74%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill bg-stable" id="systemLoadProgress" style="width: 74%"></div>
+                    </div>
+                </div>
+                <div class="data-update-indicator">Updated: <span id="systemUpdateTime">Just now</span></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>PowerPort Digital Twin Telemetry • Real-time Monitoring System</p>
+        </div>
+    </div>
+
+    <script>
+        // Update date and time
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            document.getElementById('currentDateTime').textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        // Initial call and set interval to update every second
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+
+        // Function to update time indicator
+        function updateTimeIndicator(elementId) {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+            document.getElementById(elementId).textContent = timeString;
+        }
+
+        // Create wave and power chart
+        const ctx = document.getElementById('wavePowerChart').getContext('2d');
+        let wavePowerChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['00:00', '02:00', '04:00', '06:00', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00', '24:00'],
+                datasets: [
+                    {
+                        label: 'Wave Height (m)',
+                        data: [1.2, 1.4, 1.6, 1.8, 1.5, 1.3, 1.4, 1.7, 1.9, 1.6, 1.4, 1.3, 1.5],
+                        borderColor: '#5ac8fa',
+                        backgroundColor: 'rgba(90, 200, 250, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Power Output (kW)',
+                        data: [280, 310, 340, 360, 320, 300, 340, 370, 390, 360, 340, 320, 350],
+                        borderColor: '#4cd964',
+                        backgroundColor: 'rgba(76, 217, 100, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Wave Height (m)',
+                            color: '#5ac8fa'
+                        },
+                        ticks: {
+                            color: '#5ac8fa'
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        min: 0.5,
+                        max: 2.5
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Power Output (kW)',
+                            color: '#4cd964'
+                        },
+                        ticks: {
+                            color: '#4cd964'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        },
+                        min: 200,
+                        max: 450
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#fff'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#fff'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Function to update telemetry data
+        function updateTelemetryData() {
+            // Energy Output - varies between 50% and 85%
+            const energyPercent = Math.floor(50 + Math.random() * 35);
+            const energyKW = Math.floor(energyPercent * 5);
+            document.getElementById('energyOutputPercent').innerHTML = `${energyPercent}<span class="data-unit">%</span>`;
+            document.getElementById('energyOutputKW').innerHTML = `${energyKW}<span class="data-unit">kW</span>`;
+            document.getElementById('energyOutputBar').style.width = `${energyPercent}%`;
+            updateTimeIndicator('energyUpdateTime');
+
+            // Blade RPM - varies between 40 and 70 RPM
+            const bladeRPM = Math.floor(40 + Math.random() * 30);
+            document.getElementById('bladeRPM').innerHTML = `${bladeRPM}<span class="data-unit">RPM</span>`;
+            
+            // Update RPM status
+            let rpmStatus = document.getElementById('rpmStatus');
+            if (bladeRPM < 45) {
+                rpmStatus.textContent = "Low";
+                rpmStatus.className = "data-status warning";
+            } else if (bladeRPM > 65) {
+                rpmStatus.textContent = "High";
+                rpmStatus.className = "dataStatus warning";
+            } else {
+                rpmStatus.textContent = "Optimal";
+                rpmStatus.className = "data-status stable";
+            }
+            updateTimeIndicator('rpmUpdateTime');
+
+            // Temperature - varies between 40°C and 60°C
+            const temperature = Math.floor(40 + Math.random() * 20);
+            document.getElementById('temperature').innerHTML = `${temperature}<span class="data-unit">°C</span>`;
+            
+            // Update temperature status
+            let tempStatus = document.getElementById('tempStatus');
+            if (temperature < 45) {
+                tempStatus.textContent = "Cool";
+                tempStatus.className = "data-status stable";
+            } else if (temperature > 55) {
+                tempStatus.textContent = "High";
+                tempStatus.className = "data-status critical";
+            } else {
+                tempStatus.textContent = "Within Limits";
+                tempStatus.className = "data-status warning";
+            }
+            updateTimeIndicator('tempUpdateTime');
+
+            // System Status - randomly changes between states
+            const systemStatuses = [
+                { status: "Operational", details: "All systems are functioning within normal parameters", class: "good" },
+                { status: "Optimal", details: "System performance is at peak efficiency", class: "good" },
+                { status: "Stable", details: "System is stable with minor fluctuations", class: "stable" },
+                { status: "Under Load", details: "System is handling high energy demand", class: "warning" }
+            ];
+            const randomSystemStatus = systemStatuses[Math.floor(Math.random() * systemStatuses.length)];
+            document.getElementById('systemStatus').textContent = randomSystemStatus.status;
+            document.getElementById('systemStatus').className = `data-value ${randomSystemStatus.class}`;
+            document.getElementById('systemDetails').textContent = randomSystemStatus.details;
+
+            // Update system progress bars
+            const powerOutput = Math.floor(60 + Math.random() * 30);
+            document.getElementById('powerOutputStatus').textContent = `${powerOutput}% (${powerOutput < 70 ? 'Good' : 'Optimal'})`;
+            document.getElementById('powerOutputProgress').style.width = `${powerOutput}%`;
+
+            const turbineEfficiency = Math.floor(85 + Math.random() * 12);
+            document.getElementById('turbineEfficiencyStatus').textContent = `${turbineEfficiency}%`;
+            document.getElementById('turbineEfficiencyProgress').style.width = `${turbineEfficiency}%`;
+
+            const systemLoad = Math.floor(60 + Math.random() * 35);
+            document.getElementById('systemLoadStatus').textContent = `${systemLoad}%`;
+            document.getElementById('systemLoadProgress').style.width = `${systemLoad}%`;
+            
+            // Update system load status color
+            if (systemLoad > 85) {
+                document.getElementById('systemLoadStatus').className = "critical";
+                document.getElementById('systemLoadProgress').className = "progress-fill bg-critical";
+            } else if (systemLoad > 70) {
+                document.getElementById('systemLoadStatus').className = "warning";
+                document.getElementById('systemLoadProgress').className = "progress-fill bg-warning";
+            } else {
+                document.getElementById('systemLoadStatus').className = "stable";
+                document.getElementById('systemLoadProgress').className = "progress-fill bg-stable";
+            }
+            
+            updateTimeIndicator('systemUpdateTime');
+        }
+
+        // Function to update chart data
+        function updateChartData() {
+            // Generate new wave height data (between 0.8m and 2.2m)
+            const newWaveData = wavePowerChart.data.datasets[0].data.map(() => 
+                (0.8 + Math.random() * 1.4).toFixed(1)
+            );
+            
+            // Generate new power output data (between 250kW and 420kW)
+            const newPowerData = wavePowerChart.data.datasets[1].data.map(() => 
+                Math.floor(250 + Math.random() * 170)
+            );
+            
+            // Update the chart data
+            wavePowerChart.data.datasets[0].data = newWaveData;
+            wavePowerChart.data.datasets[1].data = newPowerData;
+            
+            // Update the chart
+            wavePowerChart.update();
+        }
+
+        // Add some dynamic elements for a more interactive feel
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card, .telemetry-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.3)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.2)';
+                });
+            });
+        });
+
+        // Update telemetry data every 3 seconds
+        setInterval(updateTelemetryData, 3000);
+        
+        // Update chart data every 10 seconds
+        setInterval(updateChartData, 10000);
+
+        // Initial data update
+        updateTelemetryData();
+    </script>
+</body>
+</html>
