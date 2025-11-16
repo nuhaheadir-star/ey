@@ -17,7 +17,7 @@
             background: linear-gradient(135deg, #1a2a6c, #2a3a7c);
             color: #fff;
             min-height: 100vh;
-            padding: 20px;
+            padding: 15px;
         }
 
         .dashboard-container {
@@ -25,79 +25,51 @@
             margin: 0 auto;
         }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo i {
-            font-size: 2.5rem;
-            margin-right: 15px;
-            color: #4cd964;
-        }
-
-        .logo h1 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            background: linear-gradient(to right, #4cd964, #5ac8fa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .nav {
-            display: flex;
-            gap: 20px;
-        }
-
-        .nav a {
-            color: #fff;
-            text-decoration: none;
-            padding: 8px 15px;
-            border-radius: 8px;
-            transition: background 0.3s;
-        }
-
-        .nav a:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .nav a.active {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .date-time {
-            text-align: right;
-        }
-
-        .date-time p {
-            font-size: 1.1rem;
-            opacity: 0.8;
-        }
-
         .page-title {
             text-align: center;
-            margin-bottom: 30px;
-            font-size: 2rem;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
             font-weight: 700;
             background: linear-gradient(to right, #4cd964, #5ac8fa);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 8px 0;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
         }
 
         .filters {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 15px;
             margin-bottom: 20px;
             background: rgba(255, 255, 255, 0.1);
             padding: 15px;
@@ -106,17 +78,20 @@
 
         .filter-group {
             display: flex;
-            gap: 15px;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .filter-btn {
             background: rgba(255, 255, 255, 0.1);
             border: none;
             color: white;
-            padding: 8px 15px;
+            padding: 6px 12px;
             border-radius: 20px;
             cursor: pointer;
             transition: all 0.3s;
+            font-size: 0.85rem;
         }
 
         .filter-btn.active {
@@ -129,6 +104,9 @@
             background: rgba(255, 255, 255, 0.1);
             padding: 8px 15px;
             border-radius: 20px;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
         }
 
         .search-box input {
@@ -137,7 +115,8 @@
             color: white;
             margin-left: 10px;
             outline: none;
-            width: 200px;
+            width: 100%;
+            font-size: 0.9rem;
         }
 
         .search-box input::placeholder {
@@ -146,17 +125,17 @@
 
         .event-log {
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            margin-bottom: 30px;
-            max-height: 600px;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+            max-height: 500px;
             overflow-y: auto;
         }
 
         .event-item {
             display: flex;
-            padding: 20px;
+            padding: 15px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             transition: background 0.3s;
             animation: fadeIn 0.5s ease-in;
@@ -176,14 +155,14 @@
         }
 
         .event-icon {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            margin-right: 20px;
+            font-size: 1.2rem;
+            margin-right: 15px;
             flex-shrink: 0;
         }
 
@@ -193,42 +172,45 @@
 
         .event-header {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             margin-bottom: 8px;
         }
 
         .event-title {
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 600;
+            margin-bottom: 5px;
         }
 
         .event-time {
             color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
 
         .event-description {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
         }
 
         .event-details {
             display: flex;
-            gap: 15px;
+            gap: 10px;
             flex-wrap: wrap;
         }
 
         .event-tag {
             background: rgba(255, 255, 255, 0.1);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.75rem;
             display: flex;
             align-items: center;
         }
 
         .event-tag i {
             margin-right: 5px;
+            font-size: 0.7rem;
         }
 
         .power {
@@ -291,55 +273,24 @@
             color: #ffcc00;
         }
 
-        .stats-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 10px 0;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
         .footer {
             text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            font-size: 0.9rem;
+            margin-top: 30px;
+            padding: 15px;
+            font-size: 0.8rem;
             opacity: 0.7;
         }
 
         .new-event-indicator {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 15px;
+            right: 15px;
             background: #4cd964;
             color: white;
-            padding: 10px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            padding: 8px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
             z-index: 100;
             display: none;
             animation: pulse 2s infinite;
@@ -351,86 +302,137 @@
             100% { transform: scale(1); }
         }
 
+        /* Mobile-specific optimizations */
         @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                text-align: center;
+            body {
+                padding: 10px;
             }
             
-            .nav {
-                margin: 15px 0;
-                flex-wrap: wrap;
-                justify-content: center;
+            .page-title {
+                font-size: 1.5rem;
+                margin-bottom: 15px;
             }
             
-            .date-time {
-                margin-top: 15px;
-                text-align: center;
+            .stats-cards {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .stat-card {
+                padding: 12px;
+            }
+            
+            .stat-value {
+                font-size: 1.3rem;
             }
             
             .filters {
-                flex-direction: column;
-                gap: 15px;
+                padding: 12px;
             }
             
             .filter-group {
-                justify-content: center;
-                flex-wrap: wrap;
+                gap: 8px;
             }
             
-            .search-box {
-                width: 100%;
-                justify-content: center;
+            .filter-btn {
+                padding: 5px 10px;
+                font-size: 0.8rem;
+            }
+            
+            .event-log {
+                padding: 15px;
+                max-height: 400px;
             }
             
             .event-item {
+                padding: 12px;
                 flex-direction: column;
             }
             
             .event-icon {
-                margin-bottom: 15px;
+                margin-bottom: 10px;
+                margin-right: 0;
+                align-self: flex-start;
+            }
+            
+            .event-header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: flex-start;
+            }
+            
+            .event-title {
+                font-size: 0.95rem;
+                margin-bottom: 0;
+            }
+            
+            .event-time {
+                font-size: 0.75rem;
+                text-align: right;
+            }
+            
+            .event-description {
+                font-size: 0.85rem;
+            }
+            
+            .event-details {
+                gap: 8px;
+            }
+            
+            .event-tag {
+                padding: 3px 8px;
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .filter-btn {
+                width: 100%;
+                max-width: 200px;
+            }
+            
+            .event-header {
+                flex-direction: column;
+            }
+            
+            .event-time {
+                text-align: left;
+                margin-top: 5px;
             }
         }
     </style>
 </head>
 <body>
     <div class="dashboard-container">
-        <div class="header">
-            <div class="logo">
-                <i class="fas fa-bolt"></i>
-                <h1>PowerPort Digital Twin</h1>
-            </div>
-            <div class="nav">
-                <a href="index.html">Dashboard</a>
-                <a href="telemetry.html">Telemetry</a>
-                <a href="#" class="active">Event Log</a>
-                <a href="buoy.html">Digital Twin</a>
-            </div>
-            <div class="date-time">
-                <p id="currentDateTime">Loading...</p>
-            </div>
-        </div>
-
         <h1 class="page-title">System Event Log</h1>
 
         <div class="stats-cards">
             <div class="stat-card">
-                <i class="fas fa-exclamation-triangle" style="color: #ff9500; font-size: 2rem;"></i>
+                <i class="fas fa-exclamation-triangle" style="color: #ff9500; font-size: 1.5rem;"></i>
                 <div class="stat-value" id="activeAlerts">3</div>
                 <div class="stat-label">Active Alerts</div>
             </div>
             <div class="stat-card">
-                <i class="fas fa-bolt" style="color: #4cd964; font-size: 2rem;"></i>
+                <i class="fas fa-bolt" style="color: #4cd964; font-size: 1.5rem;"></i>
                 <div class="stat-value" id="eventsToday">12</div>
                 <div class="stat-label">Events Today</div>
             </div>
             <div class="stat-card">
-                <i class="fas fa-cogs" style="color: #5ac8fa; font-size: 2rem;"></i>
+                <i class="fas fa-cogs" style="color: #5ac8fa; font-size: 1.5rem;"></i>
                 <div class="stat-value" id="systemFaults">1</div>
                 <div class="stat-label">System Faults</div>
             </div>
             <div class="stat-card">
-                <i class="fas fa-check-circle" style="color: #4cd964; font-size: 2rem;"></i>
+                <i class="fas fa-check-circle" style="color: #4cd964; font-size: 1.5rem;"></i>
                 <div class="stat-value" id="systemUptime">98.2%</div>
                 <div class="stat-label">System Uptime</div>
             </div>
@@ -571,25 +573,6 @@
             warning: 0,
             info: 0
         };
-
-        // Update date and time
-        function updateDateTime() {
-            const now = new Date();
-            const options = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            };
-            document.getElementById('currentDateTime').textContent = now.toLocaleDateString('en-US', options);
-        }
-
-        // Initial call and set interval to update every second
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
 
         // Function to format time for events
         function formatEventTime(date) {
