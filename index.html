@@ -55,28 +55,6 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .nav {
-            display: flex;
-            gap: 15px;
-        }
-
-        .nav a {
-            color: #fff;
-            text-decoration: none;
-            padding: 8px 15px;
-            border-radius: 8px;
-            transition: background 0.3s;
-            font-weight: 500;
-        }
-
-        .nav a:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .nav a.active {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
         .date-time {
             text-align: right;
         }
@@ -255,12 +233,6 @@
                 text-align: center;
             }
             
-            .nav {
-                margin: 15px 0;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
             .date-time {
                 margin-top: 15px;
                 text-align: center;
@@ -278,12 +250,6 @@
             <div class="logo">
                 <i class="fas fa-bolt"></i>
                 <h1>PowerPort Digital Twin Dashboard</h1>
-            </div>
-            <div class="nav">
-                <a href="#" class="active">Dashboard</a>
-                <a href="telemetry.html">Telemetry</a>
-                <a href="eventlog.html">Event Log</a>
-                <a href="buoy.html">Digital Twin</a>
             </div>
             <div class="date-time">
                 <p id="currentDateTime">Loading...</p>
