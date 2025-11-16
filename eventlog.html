@@ -35,37 +35,6 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .stats-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-3px);
-        }
-
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin: 8px 0;
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
-
         .filters {
             display: flex;
             flex-direction: column;
@@ -313,19 +282,6 @@
                 margin-bottom: 15px;
             }
             
-            .stats-cards {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-            }
-            
-            .stat-card {
-                padding: 12px;
-            }
-            
-            .stat-value {
-                font-size: 1.3rem;
-            }
-            
             .filters {
                 padding: 12px;
             }
@@ -386,10 +342,6 @@
         }
 
         @media (max-width: 480px) {
-            .stats-cards {
-                grid-template-columns: 1fr;
-            }
-            
             .filter-group {
                 flex-direction: column;
                 align-items: center;
@@ -414,29 +366,6 @@
 <body>
     <div class="dashboard-container">
         <h1 class="page-title">System Event Log</h1>
-
-        <div class="stats-cards">
-            <div class="stat-card">
-                <i class="fas fa-exclamation-triangle" style="color: #ff9500; font-size: 1.5rem;"></i>
-                <div class="stat-value" id="activeAlerts">3</div>
-                <div class="stat-label">Active Alerts</div>
-            </div>
-            <div class="stat-card">
-                <i class="fas fa-bolt" style="color: #4cd964; font-size: 1.5rem;"></i>
-                <div class="stat-value" id="eventsToday">12</div>
-                <div class="stat-label">Events Today</div>
-            </div>
-            <div class="stat-card">
-                <i class="fas fa-cogs" style="color: #5ac8fa; font-size: 1.5rem;"></i>
-                <div class="stat-value" id="systemFaults">1</div>
-                <div class="stat-label">System Faults</div>
-            </div>
-            <div class="stat-card">
-                <i class="fas fa-check-circle" style="color: #4cd964; font-size: 1.5rem;"></i>
-                <div class="stat-value" id="systemUptime">98.2%</div>
-                <div class="stat-label">System Uptime</div>
-            </div>
-        </div>
 
         <div class="filters">
             <div class="filter-group">
@@ -690,25 +619,11 @@
             eventCounters.total++;
             eventCounters[event.type]++;
             
-            // Update stats
-            updateStats();
-            
             // Show new event indicator
             showNewEventIndicator();
             
             // Apply current filter
             applyFilter(currentFilter);
-        }
-
-        // Function to update statistics
-        function updateStats() {
-            document.getElementById('activeAlerts').textContent = eventCounters.alert + eventCounters.warning;
-            document.getElementById('eventsToday').textContent = eventCounters.total;
-            document.getElementById('systemFaults').textContent = eventCounters.fault;
-            
-            // Calculate uptime (decrease slightly with faults)
-            const uptime = Math.max(95, 100 - (eventCounters.fault * 0.5));
-            document.getElementById('systemUptime').textContent = `${uptime.toFixed(1)}%`;
         }
 
         // Function to show new event indicator
@@ -762,8 +677,6 @@
                 eventCounters.total++;
                 eventCounters[event.type]++;
             }
-            
-            updateStats();
         }
 
         // Search functionality
