@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Twin - PowerPort</title>
+    <title>Digital Twin Monitoring</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -21,14 +21,12 @@
         }
 
         .dashboard-container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            text-align: center;
             margin-bottom: 30px;
             padding: 20px;
             background: rgba(255, 255, 255, 0.1);
@@ -36,63 +34,18 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo i {
+        .header h1 {
             font-size: 2.5rem;
-            margin-right: 15px;
-            color: #4cd964;
-        }
-
-        .logo h1 {
-            font-size: 2.2rem;
             font-weight: 700;
+            margin-bottom: 10px;
             background: linear-gradient(to right, #4cd964, #5ac8fa);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .nav {
-            display: flex;
-            gap: 20px;
-        }
-
-        .nav a {
-            color: #fff;
-            text-decoration: none;
-            padding: 8px 15px;
-            border-radius: 8px;
-            transition: background 0.3s;
-        }
-
-        .nav a:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .nav a.active {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .date-time {
-            text-align: right;
-        }
-
-        .date-time p {
+        .header p {
             font-size: 1.1rem;
             opacity: 0.8;
-        }
-
-        .page-title {
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2rem;
-            font-weight: 700;
-            background: linear-gradient(to right, #4cd964, #5ac8fa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
 
         .twin-container {
@@ -135,13 +88,6 @@
             font-size: 1.8rem;
         }
 
-        .twin-id {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-        }
-
         .twin-status {
             display: inline-block;
             padding: 8px 20px;
@@ -179,21 +125,11 @@
             opacity: 0.8;
         }
 
-        .progress-container {
-            margin-top: 10px;
-        }
-
-        .progress-bar {
-            height: 10px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            border-radius: 5px;
-            transition: width 1s ease-in-out;
+        .data-update-indicator {
+            font-size: 0.7rem;
+            opacity: 0.6;
+            margin-top: 5px;
+            font-style: italic;
         }
 
         .twin-visual {
@@ -310,49 +246,12 @@
             z-index: 1;
         }
 
-        .status-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-
-        .status-card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .status-title {
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-
-        .status-title i {
-            margin-right: 10px;
-            font-size: 1.5rem;
-        }
-
-        .status-value {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .status-details {
-            font-size: 0.9rem;
-            opacity: 0.8;
+        .stable {
+            color: #5ac8fa;
         }
 
         .good {
             color: #4cd964;
-        }
-
-        .stable {
-            color: #5ac8fa;
         }
 
         .warning {
@@ -363,12 +262,12 @@
             color: #ff3b30;
         }
 
-        .bg-good {
-            background-color: #4cd964;
-        }
-
         .bg-stable {
             background-color: #5ac8fa;
+        }
+
+        .bg-good {
+            background-color: #4cd964;
         }
 
         .bg-warning {
@@ -387,39 +286,12 @@
             opacity: 0.7;
         }
 
-        .data-update-indicator {
-            font-size: 0.7rem;
-            opacity: 0.6;
-            margin-top: 5px;
-            font-style: italic;
-        }
-
         @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .nav {
-                margin: 15px 0;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .date-time {
-                margin-top: 15px;
-                text-align: center;
-            }
-            
             .twin-container {
                 grid-template-columns: 1fr;
             }
             
             .twin-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .status-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -428,71 +300,42 @@
 <body>
     <div class="dashboard-container">
         <div class="header">
-            <div class="logo">
-                <i class="fas fa-bolt"></i>
-                <h1>PowerPort Digital Twin</h1>
-            </div>
-            <div class="nav">
-                <a href="index.html">Dashboard</a>
-                <a href="telemetry.html">Telemetry</a>
-                <a href="eventlog.html">Event Log</a>
-                <a href="#" class="active">Digital Twin</a>
-            </div>
-            <div class="date-time">
-                <p id="currentDateTime">Loading...</p>
-            </div>
+            <h1>Digital Twin Monitoring</h1>
+            <p>Real-time system status and performance metrics</p>
         </div>
-
-        <h1 class="page-title">Digital Twin Monitoring</h1>
 
         <div class="twin-container">
             <div class="twin-card">
                 <div class="twin-header">
                     <h2 class="twin-title"><i class="fas fa-buoy"></i> Buoy Twin Status</h2>
-                    <div class="twin-id">ID: B001</div>
                 </div>
-                <div class="twin-status stable" id="buoyTwinStatus">Operational - Stable</div>
+                <div class="twin-status stable">Operational - Stable</div>
                 
                 <div class="twin-content">
                     <div class="twin-data">
                         <div class="twin-info">
                             <div class="info-label">Wave Intensity</div>
-                            <div class="info-value" id="waveIntensity">1.4<span class="info-unit">m</span></div>
-                            <div class="progress-container">
-                                <div class="progress-bar">
-                                    <div class="progress-fill bg-stable" id="waveIntensityBar" style="width: 70%"></div>
-                                </div>
-                            </div>
-                            <div class="data-update-indicator">Updated: <span id="waveUpdateTime">Just now</span></div>
+                            <div class="info-value">2.1<span class="info-unit">m</span></div>
+                            <div class="data-update-indicator">Updated: 06:46:53 PM</div>
                         </div>
                         
                         <div class="twin-info">
                             <div class="info-label">Power Output</div>
-                            <div class="info-value" id="powerOutputPercent">68<span class="info-unit">%</span></div>
-                            <div class="info-value" id="powerOutputKW">340<span class="info-unit">kW</span></div>
-                            <div class="progress-container">
-                                <div class="progress-bar">
-                                    <div class="progress-fill bg-stable" id="powerOutputBar" style="width: 68%"></div>
-                                </div>
-                            </div>
-                            <div class="data-update-indicator">Updated: <span id="powerUpdateTime">Just now</span></div>
+                            <div class="info-value">79<span class="info-unit">%</span></div>
+                            <div class="info-value">395<span class="info-unit">kW</span></div>
+                            <div class="data-update-indicator">Updated: 06:46:53 PM</div>
                         </div>
                         
                         <div class="twin-info">
                             <div class="info-label">Battery Level</div>
-                            <div class="info-value" id="batteryLevel">82<span class="info-unit">%</span></div>
-                            <div class="progress-container">
-                                <div class="progress-bar">
-                                    <div class="progress-fill bg-good" id="batteryLevelBar" style="width: 82%"></div>
-                                </div>
-                            </div>
-                            <div class="data-update-indicator">Updated: <span id="batteryUpdateTime">Just now</span></div>
+                            <div class="info-value">85<span class="info-unit">%</span></div>
+                            <div class="data-update-indicator">Updated: 06:46:53 PM</div>
                         </div>
                         
                         <div class="twin-info">
                             <div class="info-label">Operation Mode</div>
-                            <div class="info-value stable" id="operationMode">Charging Mode</div>
-                            <div class="data-update-indicator">Updated: <span id="operationUpdateTime">Just now</span></div>
+                            <div class="info-value stable">Standby Mode</div>
+                            <div class="data-update-indicator">Updated: 06:46:53 PM</div>
                         </div>
                     </div>
                     
@@ -513,50 +356,34 @@
             <div class="twin-card">
                 <div class="twin-header">
                     <h2 class="twin-title"><i class="fas fa-plug"></i> Rig Twin Status</h2>
-                    <div class="twin-id">ID: R001</div>
                 </div>
-                <div class="twin-status good" id="rigTwinStatus">Connected & Healthy</div>
+                <div class="twin-status warning">High Load</div>
                 
                 <div class="twin-content">
                     <div class="twin-data">
                         <div class="twin-info">
                             <div class="info-label">Current Demand</div>
-                            <div class="info-value" id="currentDemandPercent">45<span class="info-unit">%</span></div>
-                            <div class="info-value" id="currentDemandKW">225<span class="info-unit">kW</span></div>
-                            <div class="progress-container">
-                                <div class="progress-bar">
-                                    <div class="progress-fill bg-good" id="currentDemandBar" style="width: 45%"></div>
-                                </div>
-                            </div>
-                            <div class="data-update-indicator">Updated: <span id="demandUpdateTime">Just now</span></div>
+                            <div class="info-value">54<span class="info-unit">%</span></div>
+                            <div class="info-value">270<span class="info-unit">kW</span></div>
+                            <div class="data-update-indicator">Updated: 06:46:53 PM</div>
                         </div>
                         
                         <div class="twin-info">
                             <div class="info-label">Battery Level</div>
-                            <div class="info-value" id="rigBatteryLevel">82<span class="info-unit">%</span></div>
-                            <div class="progress-container">
-                                <div class="progress-bar">
-                                    <div class="progress-fill bg-good" id="rigBatteryLevelBar" style="width: 82%"></div>
-                                </div>
-                            </div>
-                            <div class="data-update-indicator">Updated: <span id="rigBatteryUpdateTime">Just now</span></div>
+                            <div class="info-value">78<span class="info-unit">%</span></div>
+                            <div class="data-update-indicator">Updated: 06:46:53 PM</div>
                         </div>
                         
                         <div class="twin-info">
                             <div class="info-label">Critical Load Status</div>
-                            <div class="info-value good" id="criticalLoadStatus">Stable</div>
-                            <div class="progress-container">
-                                <div class="progress-bar">
-                                    <div class="progress-fill bg-good" id="criticalLoadBar" style="width: 95%"></div>
-                                </div>
-                            </div>
-                            <div class="data-update-indicator">Updated: <span id="loadUpdateTime">Just now</span></div>
+                            <div class="info-value critical">Critical</div>
+                            <div class="data-update-indicator">Updated: 06:46:53 PM</div>
                         </div>
                         
                         <div class="twin-info">
                             <div class="info-label">Grid Connection</div>
-                            <div class="info-value good" id="gridConnection">Active</div>
-                            <div class="data-update-indicator">Updated: <span id="gridUpdateTime">Just now</span></div>
+                            <div class="info-value warning">Fluctuating</div>
+                            <div class="data-update-indicator">Updated: 06:46:53 PM</div>
                         </div>
                     </div>
                     
@@ -575,217 +402,15 @@
             </div>
         </div>
 
-        <div class="status-grid">
-            <div class="status-card">
-                <h3 class="status-title"><i class="fas fa-exchange-alt"></i> Energy Flow</h3>
-                <div class="status-value stable" id="energyFlow">342 kW → 225 kW</div>
-                <p class="status-details" id="energyFlowDetails">Buoy to Grid: 117 kW surplus</p>
-                <div class="progress-container" style="margin-top: 15px;">
-                    <div class="progress-bar">
-                        <div class="progress-fill bg-stable" id="energyFlowBar" style="width: 65%"></div>
-                    </div>
-                </div>
-                <div class="data-update-indicator">Updated: <span id="energyFlowUpdateTime">Just now</span></div>
-            </div>
-
-            <div class="status-card">
-                <h3 class="status-title"><i class="fas fa-shield-alt"></i> System Health</h3>
-                <div class="status-value good" id="systemHealth">94%</div>
-                <p class="status-details" id="systemHealthDetails">All systems operating within normal parameters</p>
-                <div class="progress-container" style="margin-top: 15px;">
-                    <div class="progress-bar">
-                        <div class="progress-fill bg-good" id="systemHealthBar" style="width: 94%"></div>
-                    </div>
-                </div>
-                <div class="data-update-indicator">Updated: <span id="systemHealthUpdateTime">Just now</span></div>
-            </div>
-
-            <div class="status-card">
-                <h3 class="status-title"><i class="fas fa-battery-three-quarters"></i> Storage Status</h3>
-                <div class="status-value good" id="storageStatus">82%</div>
-                <p class="status-details" id="storageStatusDetails">Battery capacity sufficient for 12 hours at current demand</p>
-                <div class="progress-container" style="margin-top: 15px;">
-                    <div class="progress-bar">
-                        <div class="progress-fill bg-good" id="storageStatusBar" style="width: 82%"></div>
-                    </div>
-                </div>
-                <div class="data-update-indicator">Updated: <span id="storageUpdateTime">Just now</span></div>
-            </div>
-        </div>
-
         <div class="footer">
-            <p>PowerPort Digital Twin • Real-time System Monitoring</p>
+            <p>Digital Twin Monitoring System • Real-time Data Visualization</p>
         </div>
     </div>
 
     <script>
-        // Update date and time
-        function updateDateTime() {
-            const now = new Date();
-            const options = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            };
-            document.getElementById('currentDateTime').textContent = now.toLocaleDateString('en-US', options);
-        }
-
-        // Initial call and set interval to update every second
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
-
-        // Function to update time indicator
-        function updateTimeIndicator(elementId) {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
-            document.getElementById(elementId).textContent = timeString;
-        }
-
-        // Function to update Digital Twin data
-        function updateDigitalTwinData() {
-            // Buoy Twin Data
-            // Wave Intensity - varies between 0.8m and 2.2m
-            const waveIntensity = (0.8 + Math.random() * 1.4).toFixed(1);
-            document.getElementById('waveIntensity').innerHTML = `${waveIntensity}<span class="info-unit">m</span>`;
-            document.getElementById('waveIntensityBar').style.width = `${(waveIntensity / 2.2) * 100}%`;
-            updateTimeIndicator('waveUpdateTime');
-
-            // Power Output - varies between 50% and 85%
-            const powerPercent = Math.floor(50 + Math.random() * 35);
-            const powerKW = Math.floor(powerPercent * 5);
-            document.getElementById('powerOutputPercent').innerHTML = `${powerPercent}<span class="info-unit">%</span>`;
-            document.getElementById('powerOutputKW').innerHTML = `${powerKW}<span class="info-unit">kW</span>`;
-            document.getElementById('powerOutputBar').style.width = `${powerPercent}%`;
-            updateTimeIndicator('powerUpdateTime');
-
-            // Battery Level - varies between 70% and 95%
-            const batteryLevel = Math.floor(70 + Math.random() * 25);
-            document.getElementById('batteryLevel').innerHTML = `${batteryLevel}<span class="info-unit">%</span>`;
-            document.getElementById('batteryLevelBar').style.width = `${batteryLevel}%`;
-            updateTimeIndicator('batteryUpdateTime');
-
-            // Operation Mode - randomly changes between states
-            const operationModes = [
-                { mode: "Charging Mode", class: "stable" },
-                { mode: "Generation Mode", class: "good" },
-                { mode: "Standby Mode", class: "warning" },
-                { mode: "Maintenance Mode", class: "critical" }
-            ];
-            const randomMode = operationModes[Math.floor(Math.random() * operationModes.length)];
-            document.getElementById('operationMode').textContent = randomMode.mode;
-            document.getElementById('operationMode').className = `info-value ${randomMode.class}`;
-            updateTimeIndicator('operationUpdateTime');
-
-            // Buoy Status - randomly changes between states
-            const buoyStatuses = [
-                { status: "Operational - Stable", class: "stable" },
-                { status: "Optimal Performance", class: "good" },
-                { status: "Under Maintenance", class: "warning" },
-                { status: "High Activity", class: "good" }
-            ];
-            const randomBuoyStatus = buoyStatuses[Math.floor(Math.random() * buoyStatuses.length)];
-            document.getElementById('buoyTwinStatus').textContent = randomBuoyStatus.status;
-            document.getElementById('buoyTwinStatus').className = `twin-status ${randomBuoyStatus.class}`;
-
-            // Rig Twin Data
-            // Current Demand - varies between 30% and 70%
-            const currentDemandPercent = Math.floor(30 + Math.random() * 40);
-            const currentDemandKW = Math.floor(currentDemandPercent * 5);
-            document.getElementById('currentDemandPercent').innerHTML = `${currentDemandPercent}<span class="info-unit">%</span>`;
-            document.getElementById('currentDemandKW').innerHTML = `${currentDemandKW}<span class="info-unit">kW</span>`;
-            document.getElementById('currentDemandBar').style.width = `${currentDemandPercent}%`;
-            updateTimeIndicator('demandUpdateTime');
-
-            // Rig Battery Level - varies between 70% and 95%
-            const rigBatteryLevel = Math.floor(70 + Math.random() * 25);
-            document.getElementById('rigBatteryLevel').innerHTML = `${rigBatteryLevel}<span class="info-unit">%</span>`;
-            document.getElementById('rigBatteryLevelBar').style.width = `${rigBatteryLevel}%`;
-            updateTimeIndicator('rigBatteryUpdateTime');
-
-            // Critical Load Status - varies between 85% and 100%
-            const criticalLoadPercent = Math.floor(85 + Math.random() * 15);
-            document.getElementById('criticalLoadBar').style.width = `${criticalLoadPercent}%`;
-            
-            // Update critical load status text and color
-            let criticalLoadStatus = document.getElementById('criticalLoadStatus');
-            if (criticalLoadPercent < 90) {
-                criticalLoadStatus.textContent = "Stable";
-                criticalLoadStatus.className = "info-value good";
-            } else if (criticalLoadPercent < 95) {
-                criticalLoadStatus.textContent = "High";
-                criticalLoadStatus.className = "info-value warning";
-            } else {
-                criticalLoadStatus.textContent = "Critical";
-                criticalLoadStatus.className = "info-value critical";
-            }
-            updateTimeIndicator('loadUpdateTime');
-
-            // Grid Connection - randomly changes between states
-            const gridConnections = [
-                { connection: "Active", class: "good" },
-                { connection: "Stable", class: "stable" },
-                { connection: "Fluctuating", class: "warning" }
-            ];
-            const randomGridConnection = gridConnections[Math.floor(Math.random() * gridConnections.length)];
-            document.getElementById('gridConnection').textContent = randomGridConnection.connection;
-            document.getElementById('gridConnection').className = `info-value ${randomGridConnection.class}`;
-            updateTimeIndicator('gridUpdateTime');
-
-            // Rig Status - randomly changes between states
-            const rigStatuses = [
-                { status: "Connected & Healthy", class: "good" },
-                { status: "Connected & Stable", class: "stable" },
-                { status: "High Load", class: "warning" },
-                { status: "Optimal", class: "good" }
-            ];
-            const randomRigStatus = rigStatuses[Math.floor(Math.random() * rigStatuses.length)];
-            document.getElementById('rigTwinStatus').textContent = randomRigStatus.status;
-            document.getElementById('rigTwinStatus').className = `twin-status ${randomRigStatus.class}`;
-
-            // Status Grid Data
-            // Energy Flow
-            const energyFlowFrom = powerKW;
-            const energyFlowTo = currentDemandKW;
-            const energyFlowPercent = Math.min(100, Math.floor((energyFlowTo / energyFlowFrom) * 100));
-            document.getElementById('energyFlow').textContent = `${energyFlowFrom} kW → ${energyFlowTo} kW`;
-            document.getElementById('energyFlowDetails').textContent = `Buoy to Grid: ${energyFlowFrom - energyFlowTo} kW surplus`;
-            document.getElementById('energyFlowBar').style.width = `${energyFlowPercent}%`;
-            updateTimeIndicator('energyFlowUpdateTime');
-
-            // System Health - varies between 85% and 99%
-            const systemHealth = Math.floor(85 + Math.random() * 14);
-            document.getElementById('systemHealth').textContent = `${systemHealth}%`;
-            document.getElementById('systemHealthBar').style.width = `${systemHealth}%`;
-            
-            // Update system health details
-            let systemHealthDetails = document.getElementById('systemHealthDetails');
-            if (systemHealth > 95) {
-                systemHealthDetails.textContent = "All systems operating at peak performance";
-            } else if (systemHealth > 90) {
-                systemHealthDetails.textContent = "All systems operating within normal parameters";
-            } else {
-                systemHealthDetails.textContent = "Minor issues detected, monitoring systems";
-            }
-            updateTimeIndicator('systemHealthUpdateTime');
-
-            // Storage Status - varies between 70% and 95%
-            const storageStatus = Math.floor(70 + Math.random() * 25);
-            document.getElementById('storageStatus').textContent = `${storageStatus}%`;
-            document.getElementById('storageStatusBar').style.width = `${storageStatus}%`;
-            
-            // Update storage status details
-            const hoursRemaining = Math.floor((storageStatus / 100) * 24);
-            document.getElementById('storageStatusDetails').textContent = `Battery capacity sufficient for ${hoursRemaining} hours at current demand`;
-            updateTimeIndicator('storageUpdateTime');
-        }
-
         // Add some dynamic elements for a more interactive feel
         document.addEventListener('DOMContentLoaded', function() {
-            const cards = document.querySelectorAll('.twin-card, .status-card');
+            const cards = document.querySelectorAll('.twin-card');
             cards.forEach(card => {
                 card.addEventListener('mouseenter', function() {
                     this.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.3)';
@@ -795,12 +420,6 @@
                 });
             });
         });
-
-        // Update data every 5 seconds
-        setInterval(updateDigitalTwinData, 5000);
-
-        // Initial data update
-        updateDigitalTwinData();
     </script>
 </body>
 </html>
