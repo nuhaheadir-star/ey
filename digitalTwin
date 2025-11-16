@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Twin Monitoring - PowerPort</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #2a3a7c);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #4cd964, #5ac8fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        .twin-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .twin-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .twin-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .twin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .twin-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .twin-title i {
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+
+        .twin-status {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .twin-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .twin-info {
+            margin-bottom: 15px;
+        }
+
+        .info-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .info-unit {
+            font-size: 1rem;
+            margin-left: 5px;
+            opacity: 0.8;
+        }
+
+        .data-update-indicator {
+            font-size: 0.7rem;
+            opacity: 0.6;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .twin-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .buoy-visual {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #5ac8fa, #1a2a6c);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(90, 200, 250, 0.5);
+        }
+
+        .buoy-visual::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.3);
+            top: 30%;
+            left: -25%;
+            transform: rotate(-5deg);
+            animation: wave 5s infinite linear;
+        }
+
+        .buoy-visual::after {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            top: 40%;
+            left: -25%;
+            transform: rotate(-3deg);
+            animation: wave 7s infinite linear;
+        }
+
+        @keyframes wave {
+            0% {
+                transform: translateX(0) rotate(-5deg);
+            }
+            50% {
+                transform: translateX(-20px) rotate(-5deg);
+            }
+            100% {
+                transform: translateX(0) rotate(-5deg);
+            }
+        }
+
+        .buoy-inner {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .buoy-inner i {
+            font-size: 2.5rem;
+            color: #1a2a6c;
+        }
+
+        .rig-visual {
+            width: 200px;
+            height: 180px;
+            background: linear-gradient(135deg, #4cd964, #1a6c2a);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(76, 217, 100, 0.5);
+        }
+
+        .rig-tower {
+            width: 30px;
+            height: 120px;
+            background: #333;
+            position: relative;
+            z-index: 2;
+        }
+
+        .rig-platform {
+            width: 120px;
+            height: 40px;
+            background: #555;
+            position: absolute;
+            bottom: 0;
+            z-index: 3;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .rig-connector {
+            width: 10px;
+            height: 60px;
+            background: #ffcc00;
+            position: absolute;
+            top: -60px;
+            left: 10px;
+            z-index: 1;
+        }
+
+        .stable {
+            color: #5ac8fa;
+        }
+
+        .good {
+            color: #4cd964;
+        }
+
+        .warning {
+            color: #ffcc00;
+        }
+
+        .critical {
+            color: #ff3b30;
+        }
+
+        .bg-stable {
+            background-color: #5ac8fa;
+        }
+
+        .bg-good {
+            background-color: #4cd964;
+        }
+
+        .bg-warning {
+            background-color: #ffcc00;
+        }
+
+        .bg-critical {
+            background-color: #ff3b30;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .twin-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .twin-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <h1>Digital Twin Monitoring</h1>
+            <p>Real-time system status and performance metrics</p>
+        </div>
+
+        <div class="twin-container">
+            <div class="twin-card">
+                <div class="twin-header">
+                    <h2 class="twin-title"><i class="fas fa-buoy"></i> Buoy Twin Status</h2>
+                </div>
+                <div class="twin-status stable">Operational - Stable</div>
+                
+                <div class="twin-content">
+                    <div class="twin-data">
+                        <div class="twin-info">
+                            <div class="info-label">Wave Intensity</div>
+                            <div class="info-value">2.1<span class="info-unit">m</span></div>
+                            <div class="data-update-indicator">Updated: 06:46:53 PM</div>
+                        </div>
+                        
+                        <div class="twin-info">
+                            <div class="info-label">Power Output</div>
+                            <div class="info-value">79<span class="info-unit">%</span></div>
+                            <div class="info-value">395<span class="info-unit">kW</span></div>
+                            <div class="data-update-indicator">Updated: 06:46:53 PM</div>
+                        </div>
+                        
+                        <div class="twin-info">
+                            <div class="info-label">Battery Level</div>
+                            <div class="info-value">85<span class="info-unit">%</span></div>
+                            <div class="data-update-indicator">Updated: 06:46:53 PM</div>
+                        </div>
+                        
+                        <div class="twin-info">
+                            <div class="info-label">Operation Mode</div>
+                            <div class="info-value stable">Standby Mode</div>
+                            <div class="data-update-indicator">Updated: 06:46:53 PM</div>
+                        </div>
+                    </div>
+                    
+                    <div class="twin-visual">
+                        <div class="buoy-visual">
+                            <div class="buoy-inner">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px; text-align: center;">
+                            <div class="info-label">Buoy Position</div>
+                            <div class="info-value">12.3456° N, 98.7654° E</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="twin-card">
+                <div class="twin-header">
+                    <h2 class="twin-title"><i class="fas fa-plug"></i> Rig Twin Status</h2>
+                </div>
+                <div class="twin-status warning">High Load</div>
+                
+                <div class="twin-content">
+                    <div class="twin-data">
+                        <div class="twin-info">
+                            <div class="info-label">Current Demand</div>
+                            <div class="info-value">54<span class="info-unit">%</span></div>
+                            <div class="info-value">270<span class="info-unit">kW</span></div>
+                            <div class="data-update-indicator">Updated: 06:46:53 PM</div>
+                        </div>
+                        
+                        <div class="twin-info">
+                            <div class="info-label">Battery Level</div>
+                            <div class="info-value">78<span class="info-unit">%</span></div>
+                            <div class="data-update-indicator">Updated: 06:46:53 PM</div>
+                        </div>
+                        
+                        <div class="twin-info">
+                            <div class="info-label">Critical Load Status</div>
+                            <div class="info-value critical">Critical</div>
+                            <div class="data-update-indicator">Updated: 06:46:53 PM</div>
+                        </div>
+                        
+                        <div class="twin-info">
+                            <div class="info-label">Grid Connection</div>
+                            <div class="info-value warning">Fluctuating</div>
+                            <div class="data-update-indicator">Updated: 06:46:53 PM</div>
+                        </div>
+                    </div>
+                    
+                    <div class="twin-visual">
+                        <div class="rig-visual">
+                            <div class="rig-connector"></div>
+                            <div class="rig-tower"></div>
+                            <div class="rig-platform"></div>
+                        </div>
+                        <div style="margin-top: 20px; text-align: center;">
+                            <div class="info-label">Rig Location</div>
+                            <div class="info-value">Coastal Station A</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Digital Twin Monitoring System • Real-time Data Visualization</p>
+        </div>
+    </div>
+
+    <script>
+        // Add some dynamic elements for a more interactive feel
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.twin-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.3)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.2)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
